@@ -11,11 +11,11 @@ Za uspešno simulacijo potrebujemo le nekako učinkovito za vsako telo izračuna
 
 ## Implementacija
 Za izračun $\vec{F}$ za telo $T_i$ je dovolj sešteti vse gravitacijske sile med ostalimi $n-1$ telesi. Torej $\vec{F} = \sum^{j \neq i}_{j} \vec{F_{i,j}}$, kjer je $$\vec{F_{i,j}} = G \frac{M_i M_j}{|r_{i,j}|^3}  \vec{r_{i,j}}$$
-$\vec{r_{i,j}}$ pa je vektor ki telo $T_i$ povezuje z $T_j$. Opazimo da je dovolj $ \frac{\vec{r_{i,j}}}{|r_{i,j}|^3}$ izračunati le za vse pare $(i,j)$, kjer je $i < j <= n$. Ker je računanje tega drago te vrednosti poračunajmo le enkrat in jih shranimo v tem vrstnem redu v matriko $R$.
+$\vec{r_{i,j}}$ pa je vektor ki telo $T_i$ povezuje z $T_j$. Opazimo da je dovolj $\frac{\vec{r_{i,j}}}{|r_{i,j}|^3}$ izračunati le za vse pare $(i,j)$, kjer je $i < j \leq n$. Ker je računanje tega drago te vrednosti poračunajmo le enkrat in jih shranimo v tem vrstnem redu v matriko $R$.
 
 Vsakemu telesu priredimo torej pred simulacijo še en *sparse vektor* (vektor z veliko ničlami) $\vec{m_i}$, kjer bo $\vec{m_i}$ imel v mestih $j$ kjer se v stolpcu matrike $R$ nahaja $r_{i,j}$ vrednost $M_j$ in v stolpcih kjer se nahaja $r_{j,i}$ vrednosti $-M_j$. 
 
 Za vsak $T_i$ bo torej veljalo enostavno $d\vec{v_i} = G \cdot R\vec{m_i} \cdot dt$.
 
-## Poraba prostora
-Trenutna implementacija porabi v teoriji za $n$ teles okoli $O(n^2)$ spomina torej za $n \leq 5000$ okoli 500MB. 
+## Poraba prostora in težave
+Trenutna implementacija porabi v teoriji za $n$ teles okoli $O(n^2)$ spomina torej za $n \leq 5000$ okoli 500MB. Trenutna implementacija je tudi zelo občutljiva ko sta si telesi blizu in zato v teh primerih pride do kaotičnega gibanja delecv. 
