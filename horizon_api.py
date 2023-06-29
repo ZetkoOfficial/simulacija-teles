@@ -30,7 +30,8 @@ def search_body(search_query="MB"):
 
 # funkcija vrne objekt ki vsebuje podatke o izbranem telesu, če ni rezultatov ali pride do napake vrne None
 # masa je v enotah 10^20 kg, polmer v km, lega v km, hitrost v km/s
-def get_body_json(body_index, time):
+def get_body_json(body_index, time, name=""):
+    if not name: name = body_index
 
     # pomagalna funkcija, ki vrne prvo veljavno število v vrstcii po zanku =, 0 če pride nekje do napake
     def extract_first_num(line):
@@ -84,7 +85,7 @@ def get_body_json(body_index, time):
                 xv_data = lines[i+1].split(",")
 
         # če je mogoče parsirajmo vekotja lokacije in hitrosti za telo
-        x_vec, y_vec = (0,0,0), (0,0,0)
+        x_vec, y_vec = (), ()
         try: x_vec = tuple(map(float, xv_data[2:5]))
         except: pass
 
@@ -93,6 +94,7 @@ def get_body_json(body_index, time):
 
         # masa je GM/G kjer je G gravitacijska konstanta
         result_json = {
+            "name":     name,
             "mass":     GM/6.6743015,
             "radius":   radius,
             "x_vec":    x_vec,
@@ -103,6 +105,6 @@ def get_body_json(body_index, time):
     except:
         return None
 
-print(json.dumps(get_body_json("999", "2000-1-1"))) # Pluton
-print(json.dumps(get_body_json("399", "2000-1-1"))) # Zemlja 
-print(json.dumps(get_body_json("502", "2000-1-1"))) # Europa
+#print(json.dumps(get_body_json("999", "2000-1-1"))) # Pluton
+#print(json.dumps(get_body_json("399", "2000-1-1"))) # Zemlja 
+#print(json.dumps(get_body_json("502", "2000-1-1"))) # Europa
