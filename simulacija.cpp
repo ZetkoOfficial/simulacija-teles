@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <chrono>
 
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Sparse>
@@ -10,14 +11,14 @@
 using namespace std;
 using namespace Eigen;
 
-const double G = 1;
+double G = 6.674;
 
 struct body {
     double M;
-    Vector3d x,v; SparseVector<double> m;
+    Vector3d x,v,a; SparseVector<double> m;
 
     body(double M, Vector3d x, Vector3d v) {
-        this->M = M; this->x = x; this->v = v;
+        this->M = M; this->x = x; this->v = v; this->a = {0,0,0};
     }
 
     // funkcija nastavi masne vektorje za vsa telesa v seznamu bodies 
@@ -60,41 +61,57 @@ double fill_R_matrix(Matrix3Xd& R, const vector<body>& bodies) {
 }
 
 // simulira gibanje teles za obdobje time, z standardnim korakom časa sdt in območjem previdnosti r(i,j) < danger_dist, ki dt zmanjša za danger_factor
-void simulate(vector<body>& bodies, Matrix3Xd& R, double time, double sdt = 1, double danger_dist = 10, double danger_factor=1000) {
-    int N = bodies.size();
-    double t = 0, next_t = 0;
+void simulate(vector<body>& bodies, Matrix3Xd& R, double time, double sdt = 1, int out_steps = 1000, double danger_dist = 10, double danger_factor=1000) {
+    int N = bodies.size(); double pdt = time/out_steps;
+    double t = 0, next_t = 0; 
     while(t < time){
         // preverimo če je čas za prikaz koordinat
-        if(t > next_t){
-             for(int j = 0; j < N; j++) cout << bodies[j].x.transpose() << endl;
-             next_t = t + sdt;
+        if(t >= next_t){
+             for(int j = 0; j < N; j++) cout << bodies[j].x.transpose() - bodies[bodies.size()-1].x.transpose() << endl;
+             next_t = t + pdt;
         }
 
         double norm = fill_R_matrix(R, bodies);
         double dt = sdt;
 
         // če je najbližja razdaja premajhna potem smo v nevarnem območju in zmanjšamo dt
-        if(norm <= danger_dist)  dt /= danger_factor;
+        //if(norm <= danger_dist)  dt /= danger_factor;
 
         // povečamo vektoje lege in hitrosti za vsa telesa za dxj in dvj
         for(int j = 0; j < N; j++) {
-            bodies[j].x += bodies[j].v * dt;
-            bodies[j].v += G * (R*bodies[j].m) * dt;
+            //bodies[j].x += bodies[j].v * dt;
+            //bodies[j].v += G * (R*bodies[j].m) * dt;
+
+            bodies[j].x += bodies[j].v * dt + 0.5 * bodies[j].a * dt*dt;
+
+            Vector3d a = G*(R*bodies[j].m);
+            bodies[j].v += 0.5 * (bodies[j].a + a) * dt;
+            bodies[j].a = a;
         }
         t += dt;
     }
 }
 
 int main() {
-    vector<body> bodies = {
-        {1,{-10,0,0},{0,0.05,0.005}},
-        {1,{10,0,0},{0,-0.05,0}},
-    };
 
-    int N = bodies.size();
+    int N, output_steps; double simulation_time; vector<body> bodies;
+    cin >> G >> simulation_time >> output_steps >> N; 
+    
+    for(int i = 0; i < N; i++) {
+        double M; Vector3d x, v;
+        cin >> M;
+        cin >> x[0] >> x[1] >> x[2];
+        cin >> v[0] >> v[1] >> v[2];
+
+        bodies.push_back(body(M, x, v));
+    }
 
     body::populate_mass_vectors(bodies);
     Matrix3Xd R(3,(N*(N-1))/2);
 
-    simulate(bodies, R, 1000, 0.5, 50);
+    auto s = chrono::system_clock::now();
+    simulate(bodies, R, simulation_time, 60, output_steps);
+    auto e = chrono::system_clock::now();
+
+    cout << chrono::duration_cast<chrono::milliseconds>(e-s).count()/1000.0 << " sekund" << endl;
 }
