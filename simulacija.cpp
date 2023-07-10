@@ -63,12 +63,12 @@ double fill_R_matrix(Matrix3Xd& R, const vector<body>& bodies) {
 // simulira gibanje teles za obdobje time, z standardnim korakom časa sdt in območjem previdnosti r(i,j) < danger_dist, ki dt zmanjša za danger_factor
 void simulate(vector<body>& bodies, Matrix3Xd& R, double time, double sdt = 1, int out_steps = 1000, double danger_dist = 10, double danger_factor=1000) {
     int N = bodies.size(); double pdt = time/out_steps;
-    double t = 0, next_t = 0; 
+    double t = 0, next_t = 0; int done_steps = 0;
     while(t < time){
         // preverimo če je čas za prikaz koordinat
         if(t >= next_t){
              for(int j = 0; j < N; j++) cout << bodies[j].x.transpose() - bodies[bodies.size()-1].x.transpose() << endl;
-             next_t = t + pdt;
+             next_t = t + pdt; done_steps++;
         }
 
         double norm = fill_R_matrix(R, bodies);
@@ -90,12 +90,17 @@ void simulate(vector<body>& bodies, Matrix3Xd& R, double time, double sdt = 1, i
         }
         t += dt;
     }
+
+    // poskrbimo za kake off-by-one napake 
+    for(int i = done_steps; i < out_steps; i++){
+        for(int j = 0; j < N; j++) cout << bodies[j].x.transpose() - bodies[bodies.size()-1].x.transpose() << endl;
+    }
 }
 
 int main() {
 
-    int N, output_steps; double simulation_time; vector<body> bodies;
-    cin >> G >> simulation_time >> output_steps >> N; 
+    int N, output_steps; double simulation_time, dt; vector<body> bodies;
+    cin >> G >> dt >> simulation_time >> output_steps >> N; 
     
     for(int i = 0; i < N; i++) {
         double M; Vector3d x, v;
@@ -110,8 +115,8 @@ int main() {
     Matrix3Xd R(3,(N*(N-1))/2);
 
     auto s = chrono::system_clock::now();
-    simulate(bodies, R, simulation_time, 60, output_steps);
+    simulate(bodies, R, simulation_time, dt, output_steps);
     auto e = chrono::system_clock::now();
 
-    cout << chrono::duration_cast<chrono::milliseconds>(e-s).count()/1000.0 << " sekund" << endl;
+    //cout << chrono::duration_cast<chrono::milliseconds>(e-s).count()/1000.0 << " sekund" << endl;
 }
