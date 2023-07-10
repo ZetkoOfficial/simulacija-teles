@@ -12,9 +12,11 @@ def create_query(parameter_map: dict):
 # funkcije vrne slovar teles ki se ujemajo search query-u in njihovih indeksov, če ni rezultatov ali pride do napake vrne None
 def search_body(search_query="MB"):
     try: 
-        result = requests.get(create_query({"COMMAND":search_query}))
+        result = requests.get(create_query({"COMMAND":search_query}), timeout=5)
         lines = result.content.decode().splitlines()[:-2]
         widths_line = list(map(len, lines[7].split()))
+
+        if "Multiple" not in lines[4] and "Matching" not in lines[-1]: return {"_single_": lines[4].split()[-1].strip()}
 
         parsed_body_map = {}
         for i in range(8, len(lines)):
@@ -59,7 +61,7 @@ def get_body_json(body_index, time, name=""):
             "CENTER":       "500@0",
             "TLIST":        f"%27{time}%27",
             "CSV_FORMAT":   "YES"
-        }))
+        }), timeout=5)
         lines = result.content.decode().splitlines()
         
         # če mogoče najdemo vrstici ki vsebujejo maso in polmer
@@ -95,6 +97,7 @@ def get_body_json(body_index, time, name=""):
         # masa je GM/G kjer je G gravitacijska konstanta
         result_json = {
             "name":     name,
+            "time":     time, 
             "mass":     GM/6.6743015,
             "radius":   radius,
             "x_vec":    x_vec,
