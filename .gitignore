@@ -2,6 +2,7 @@ testiranje/
 __pycache__/
 .vscode/
 .ipynb_checkpoints
+.venv
 makefile
 
 simulacija
