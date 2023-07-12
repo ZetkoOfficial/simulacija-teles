@@ -3,7 +3,6 @@ __pycache__/
 .vscode/
 .ipynb_checkpoints
 .venv
-makefile
 
 simulacija
 telesa/
