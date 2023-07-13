@@ -107,7 +107,3 @@ def get_body_json(body_index, time, name=""):
     
     except:
         return None
-
-#print(json.dumps(get_body_json("999", "2000-1-1"))) # Pluton
-#print(json.dumps(get_body_json("399", "2000-1-1"))) # Zemlja 
-#print(json.dumps(get_body_json("502", "2000-1-1"))) # Europa

@@ -3,7 +3,6 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
-#include <chrono>
 
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Sparse>
@@ -60,11 +59,11 @@ double fill_R_matrix(Matrix3Xd& R, const vector<body>& bodies) {
     return min_norm;
 }
 
-// simulira gibanje teles za obdobje time, z standardnim korakom časa sdt in območjem previdnosti r(i,j) < danger_dist, ki dt zmanjša za danger_factor
-void simulate(vector<body>& bodies, Matrix3Xd& R, double time, double sdt = 1, int out_steps = 1000, double danger_dist = 10, double danger_factor=1000) {
+// simulira gibanje teles za obdobje time, z standardnim korakom časa sdt
+void simulate(vector<body>& bodies, Matrix3Xd& R, double time, double sdt = 1, int out_steps = 1000) {
     int N = bodies.size(); double pdt = time/out_steps;
     double t = 0, next_t = 0; int done_steps = 0;
-    while(t < time){
+    while(t <= time){
         // preverimo če je čas za prikaz koordinat
         if(t >= next_t){
              for(int j = 0; j < N; j++) cout << bodies[j].x.transpose() - bodies[bodies.size()-1].x.transpose() << endl;
@@ -74,17 +73,11 @@ void simulate(vector<body>& bodies, Matrix3Xd& R, double time, double sdt = 1, i
         double norm = fill_R_matrix(R, bodies);
         double dt = sdt;
 
-        // če je najbližja razdaja premajhna potem smo v nevarnem območju in zmanjšamo dt
-        //if(norm <= danger_dist)  dt /= danger_factor;
-
         // povečamo vektoje lege in hitrosti za vsa telesa za dxj in dvj
         for(int j = 0; j < N; j++) {
-            //bodies[j].x += bodies[j].v * dt;
-            //bodies[j].v += G * (R*bodies[j].m) * dt;
+            Vector3d a = G*(R*bodies[j].m);
 
             bodies[j].x += bodies[j].v * dt + 0.5 * bodies[j].a * dt*dt;
-
-            Vector3d a = G*(R*bodies[j].m);
             bodies[j].v += 0.5 * (bodies[j].a + a) * dt;
             bodies[j].a = a;
         }
@@ -98,7 +91,6 @@ void simulate(vector<body>& bodies, Matrix3Xd& R, double time, double sdt = 1, i
 }
 
 int main() {
-
     int N, output_steps; double simulation_time, dt; vector<body> bodies;
     cin >> G >> dt >> simulation_time >> output_steps >> N; 
     
@@ -114,9 +106,5 @@ int main() {
     body::populate_mass_vectors(bodies);
     Matrix3Xd R(3,(N*(N-1))/2);
 
-    auto s = chrono::system_clock::now();
     simulate(bodies, R, simulation_time, dt, output_steps);
-    auto e = chrono::system_clock::now();
-
-    //cout << chrono::duration_cast<chrono::milliseconds>(e-s).count()/1000.0 << " sekund" << endl;
 }
