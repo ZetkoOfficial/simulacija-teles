@@ -1,6 +1,11 @@
+CXX=g++
+CXXFLAGS=-O3 -fopenmp -march=native -fno-math-errno -DNDEBUG
+PYC=python3
+PIP=pip3
+
 simulacija: simulacija.cpp
 	@echo "| Prevajanje programa za simulacije..."
-	@g++ -O3 -fopenmp -march=native -fno-math-errno -DNDEBUG simulacija.cpp -o simulacija
+	$(CXX) $(CXXFLAGS) simulacija.cpp -o simulacija
 	@echo "|--> končano"
 
 jupyter: simulacija
@@ -12,10 +17,10 @@ setup:
 	@mkdir -p telesa
 	@echo "|--> končano"
 	@echo "| Namestitev potrebnih knjižnic"
-	@pip3 install -r requirements.txt
+	@$(PIP) install -r requirements.txt
 	@echo "|--> končano"
 	@echo "| Namestitev jupyter jedra"
-	@python3 -m ipykernel install --user --name=simulacija_teles_venv
+	@$(PYC) -m ipykernel install --user --name=simulacija_teles_venv
 	@echo "|--> končano"
 
 remove:
