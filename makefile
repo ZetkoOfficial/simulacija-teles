@@ -5,7 +5,7 @@ PIP=pip3
 
 simulacija: simulacija.cpp
 	@echo "| Prevajanje programa za simulacije..."
-	$(CXX) $(CXXFLAGS) simulacija.cpp -o simulacija
+	@$(CXX) $(CXXFLAGS) simulacija.cpp -o simulacija
 	@echo "|--> končano"
 
 jupyter: simulacija
