@@ -133,7 +133,7 @@ Computations by ...
     Author      : Jon.D.Giorgini@jpl.nasa.gov
 *******************************************************************************
 ```
-## .json pridobljen z metodo `get_body_json`
+## .json pridobljen z metodo `get_body_json` iz `horizon_api.py`
 ```json
 {
     "name": "Mars",
@@ -155,4 +155,4 @@ Computations by ...
 V primeru, da je kak podatek/telo manjkajoče lahko .json ročno ustvarite, pri čemer je `time` ključ neobvezen. Enote mase so $10^{20} kg$, enote vektorja pozicije so $km$, enote vektorja hitrosti pa so v $km\cdot s^{-1}$.
 
 ## Možne težave
-Pridobicanje pozicij in hitrosti iz take datoteke je dokaj neproblematično, medtem ko je pa pridobivanje masa in polmera problematično, saj je odsek `PHYSICAL DATA` za različna telesa zelo nestandardno napisan za različna telesa. Trenutno torej poskusimo iz datoteke pridobiti vrednosti `GM` in prvi pojav `mean radius` v tem odseku. Problem je tudi v enotah, ki morda niso enake za vsa telesa in v naši datoteki predpostavimo, da je v kilometrih(kar je v veliki večini primerov). Vrednost `GM` tudi ni prisotna v vseh telesih, ampak je le v večjih.   
+Pridobicanje pozicij in hitrosti iz take datoteke je dokaj neproblematično, medtem ko je pa pridobivanje mase in polmera problematično, saj je odsek `PHYSICAL DATA` za različna telesa zelo nestandardno napisan. Trenutno torej poskusimo iz datoteke pridobiti vrednosti `GM` in prvi pojav `mean radius` v tem odseku. Problem je tudi v enotah, ki morda niso enake za vsa telesa in v naši datoteki predpostavimo, da je polmer v kilometrih(kar je v veliki večini primerov). Vrednost `GM` tudi ni prisotna v vseh telesih, ampak je le v večjih.   

@@ -7,6 +7,12 @@ naršemo grafike za njih in jih simuliramo v 3d prostoru in simulacijo vizualno 
 - [Simulacija problema n-teles](dokumentacija/02_simulacija.md)
 
 ## Namestitev
+Za namestitev na sistemih Linux(testirano: Ubuntu 20.04.6 LTS) potrebujete:
+- **C++ compiler** (testirano: g++ 9.4.0)
+- **Eigen3 za C++** (libeigen3-dev)
+- **python3** (testirano: Python 3.8.10)
+- sposobnost ustvarjanja **python virtualnih okolij**
+
 V direktoriji projekta ustvarite virtualno python okolje z imenom .venv in ga aktivirajte v terminalu:
 ```
 python3 -m venv .venv
@@ -16,10 +22,10 @@ Nato za prvo namestitev poženite makefile z pravilom `setup`:
 ```
 make setup
 ```
-Podobno pa lahko za odmestitev virtualno okolje deaktivirate in uporabite pravilo `remove`.
+Podobno pa lahko za odmestitev uporabite pravilo `remove` in nato virtualno okolje deaktivirate z bash ukazom `deactivate`.
 
 ## Zagon aplikacije
-Aplikacijo zaženete tako da poženete makefile z pravilom `jupyter` in v notebooku izberite jedro `simulacija_teles_venv`:
+Aplikacijo zaženete tako da poženete makefile z pravilom `jupyter` in v notebooku izberite jedro `simulacija_teles_venv`, če že ni izbrano:
 ```
 make jupyter
 ```
