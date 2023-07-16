@@ -8,6 +8,9 @@ jupyter: simulacija
 	@jupyter notebook --port 8888 --no-browser
 
 setup:
+	@echo "| Ustvarjanje potrebnih map"
+	@mkdir -p telesa
+	@echo "|--> končano"
 	@echo "| Namestitev potrebnih knjižnic"
 	@pip3 install -r requirements.txt
 	@echo "|--> končano"
