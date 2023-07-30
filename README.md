@@ -2,6 +2,8 @@
 Projektna naloga za predmet UVP v 1. letniku FMF v kateri pridobimo podatke o nebesnih telesih,
 naršemo grafike za njih in jih simuliramo v 3d prostoru in simulacijo vizualno prikažemo.
 
+Pozor: iskalni ključi za nebesna telesa morajo biti zapisani v angleškem jeziku(npr. Earth, Mars, Moon). 
+
 ## Dokumentacija za manjše dele projekta
 - [Horizon API](dokumentacija/01_horizon_api.md)
 - [Simulacija problema n-teles](dokumentacija/02_simulacija.md)
